@@ -40,6 +40,7 @@ AlembicImporter/Assets/UTJ/BlendShapeBuilder*
 AlembicImporter/Assets/UTJ/VertexTweaker*
 AlembicImporter/Assets/PostProcessing*
 .vs/
+.vscode/
 Library/
 Temp/
 _tmp/
