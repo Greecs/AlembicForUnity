@@ -12,12 +12,6 @@ using UnityEngine.TestTools;
 namespace UnityEditor.Formats.Alembic.Exporter.UnitTests {
     public class AlembicAPITest : AlembicTestBase {
 
-        // Loads a given scene
-            IEnumerator SceneLoader (string sceneToLoad) {
-            SceneManagement.EditorSceneManager.LoadScene (sceneToLoad, UnityEngine.SceneManagement.LoadSceneMode.Single);
-            yield return null;
-        }
-
         // Records a frame then stops the recorder
         IEnumerator Record (AlembicRecorder recorderTarget) {
             var result = recorderTarget.BeginRecording ();
@@ -25,6 +19,8 @@ namespace UnityEditor.Formats.Alembic.Exporter.UnitTests {
             recorderTarget.ProcessRecording ();
             yield return null;
             recorderTarget.EndRecording ();
+            yield return null;
+            TestAbcImported(recorderTarget.settings.OutputPath);
         }
 
         // Test Capture Components
@@ -32,7 +28,8 @@ namespace UnityEditor.Formats.Alembic.Exporter.UnitTests {
         public IEnumerator TestCaptureComponents () {
             SceneLoader ("TestAPI");
             using (AlembicRecorder recorder = new AlembicRecorder ()) {
-                recorder.settings.OutputPath = GetRandomAbcFilePath();
+                string path = GetRandomAbcFilePath();
+                recorder.settings.OutputPath = path;
                 recorder.settings.AssumeNonSkinnedMeshesAreConstant = false;
                 recorder.settings.CaptureMeshRenderer = true;
                 recorder.settings.CaptureCamera = true;
@@ -47,7 +44,8 @@ namespace UnityEditor.Formats.Alembic.Exporter.UnitTests {
         public IEnumerator TestAeConfig () {
             SceneLoader ("TestAPI");
             using (AlembicRecorder recorder = new AlembicRecorder ()) {
-                recorder.settings.OutputPath = GetRandomAbcFilePath();
+                string path = GetRandomAbcFilePath();
+                recorder.settings.OutputPath = path;
                 var conf = recorder.settings.Conf;
                 conf.ArchiveType = UnityEngine.Formats.Alembic.Sdk.aeArchiveType.Ogawa;
                 conf.FrameRate = 17;
@@ -55,19 +53,6 @@ namespace UnityEditor.Formats.Alembic.Exporter.UnitTests {
                 conf.SwapHandedness = true;
                 Record (recorder);
             }
-            yield return null;
-        }
-
-        // Test Dispose current recording
-        [UnityTest]
-        public IEnumerator TestDispose () {
-            SceneLoader ("TestAPI");
-            AlembicRecorder recorder;
-            using(recorder = new AlembicRecorder()){}
-            Assert.That(recorder.settings, Is.Not.Null);
-            recorder = new AlembicRecorder();
-            recorder.Dispose();
-            Assert.That(recorder.settings, Is.Not.Null);
             yield return null;
         }
 
