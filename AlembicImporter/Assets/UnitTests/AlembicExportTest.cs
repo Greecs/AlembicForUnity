@@ -137,7 +137,6 @@ namespace UnityEditor.Formats.Alembic.Exporter.UnitTests {
         /// the asset database.
         /// </summary>
         /// <param name="abcPath"></param>
-
         public void TestAbcImported (string abcPath) {
             AssetDatabase.Refresh ();
 
